@@ -99,7 +99,7 @@ class Mink
      *
      * @param   string  $name   session name
      *
-     * @return  Behat\Mink\Session
+     * @return  \Behat\Mink\Session
      */
     public function getSession($name = null)
     {

@@ -10,7 +10,8 @@ use Behat\Mink\Mink,
     Behat\Mink\Driver\SahiDriver,
     Behat\Mink\Driver\ZombieDriver,
     Behat\Mink\Driver\SeleniumDriver,
-    Behat\Mink\Driver\Selenium2Driver;
+    Behat\Mink\Driver\Selenium2Driver,
+    Behat\Mink\Driver\WebkitDriver;
 
 use Goutte\Client as GoutteClient;
 
@@ -148,6 +149,14 @@ class MinkContext extends BaseMinkContext
                 $browser, $params['host']
             ));
         }
+
+        if (!$mink->hasSession('webkit')) {
+            $params  = $parameters['webkit'];
+            $browser = $parameters['browser'];
+            $mink->registerSession('webkit', static::initWebkitSession(
+                $browser, $params['host']
+            ));
+        }
     }
 
     /**
@@ -231,6 +240,16 @@ class MinkContext extends BaseMinkContext
     }
 
     /**
+     * Initializes and returns new WebkitDriver session.
+     *
+     * @return  Behat\Mink\Session
+     */
+    protected static function initWebkitSession($options = array())
+    {
+        return new Session(new WebkitDriver($options));
+    }
+
+    /**
      * Returns list of default parameters.
      *
      * @return  array
@@ -265,6 +284,9 @@ class MinkContext extends BaseMinkContext
             ),
             'webdriver' => array(
                 'host' => 'http://localhost:4444/wd/hub'
+            ),
+            'webkit' => array(
+                'options' => array(),
             ),
         );
     }

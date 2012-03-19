@@ -10,7 +10,8 @@ use Behat\Mink\Mink,
     Behat\Mink\Driver\SeleniumDriver,
     Behat\Mink\Driver\Selenium2Driver,
     Behat\Mink\Driver\Zombie\Connection as ZombieConnection,
-    Behat\Mink\Driver\Zombie\Server as ZombieServer;
+    Behat\Mink\Driver\Zombie\Server as ZombieServer,
+    Behat\Mink\Driver\WebkitDriver;
 
 use Goutte\Client as GoutteClient;
 
@@ -124,6 +125,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         if (!$mink->hasSession('webdriver')) {
             $mink->registerSession('webdriver', static::initWebdriverSession());
         }
+
+        if (!$mink->hasSession('webkit')) {
+            $mink->registerSession('webkit', static::initWebkitSession());
+        }
     }
 
     /**
@@ -204,5 +209,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                                                    $host = 'http://localhost:4444/wd/hub')
     {
         return new Session(new Selenium2Driver($browser, null, $host));
+    }
+
+    /**
+     * Initializes and returns new WebkitDriver session.
+     *
+     * @return \Behat\Mink\Session
+     */
+    protected static function initWebkitSession($options = array())
+    {
+        return new Session(new WebkitDriver($options));
     }
 }
