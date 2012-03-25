@@ -122,6 +122,7 @@ Contributors
 * Pascal Cremer [b00giZm](http://github.com/b00giZm) [ZombieDriver creator]
 * Alexandre Salomé [alexandresalome](http://github.com/alexandresalome) [SeleniumDriver creator]
 * Pete Otaqui [pete-otaqui](http://github.com/pete-otaqui) [Selenium2Driver creator]
+* Shuhei Tanuma [chobie](http://github.com/chobie) [WebkitDriver creator]
 
 Sponsors
 --------

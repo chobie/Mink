@@ -30,6 +30,7 @@ class Browser
     protected $options = array();
 
     private static $default_options = array(
+        'invoke_server' => true,
         'path.webkit_server' => '/Library/Ruby/Gems/1.8/gems/capybara-webkit-0.11.0/bin/webkit_server',
     );
 
@@ -54,7 +55,7 @@ class Browser
     }
 
     /**
-     * stop server and dissconnect
+     * stop server and disconnect
      */
     public function stop()
     {
@@ -202,6 +203,7 @@ class Browser
         $descriptorspec = array(
             0 => array("pipe", "r"),
             1 => array("pipe", "w"),
+            2 => array("pipe", "w"),
         );
 
         $process = proc_open($server_path, $descriptorspec, $pipes);
@@ -267,6 +269,25 @@ class Browser
     public function source()
     {
         return $this->command("Source");
+    }
+
+    /**
+     * trigger event
+     *
+     * @param $xpath
+     * @param $event
+     * @return bool
+     */
+    public function trigger($xpath, $event)
+    {
+        $nodes = $this->find($xpath);
+        $node = array_shift($nodes);
+        if (!empty($node)) {
+            $this->invoke("trigger",$node, $event);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

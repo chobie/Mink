@@ -34,6 +34,11 @@ class WebkitDriver implements DriverInterface
     private $session;
 
 
+    public function getBrowser()
+    {
+        return $this->browser;
+    }
+
     /**
      * @param array $options
      */
@@ -371,8 +376,7 @@ class WebkitDriver implements DriverInterface
      */
     public function doubleClick($xpath)
     {
-        // TODO: Implement doubleClick() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->browser->trigger($xpath, "dblclick");
     }
 
     /**
@@ -382,8 +386,7 @@ class WebkitDriver implements DriverInterface
      */
     public function rightClick($xpath)
     {
-        // TODO: Implement rightClick() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->browser->trigger($xpath, "contextmenu");
     }
 
     /**
@@ -417,7 +420,7 @@ class WebkitDriver implements DriverInterface
      */
     public function mouseOver($xpath)
     {
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->browser->trigger($xpath, "mouseover");
     }
 
     /**
@@ -427,8 +430,7 @@ class WebkitDriver implements DriverInterface
      */
     public function focus($xpath)
     {
-        // TODO: Implement blur() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->browser->trigger($xpath, "focus");
     }
 
     /**
@@ -438,8 +440,7 @@ class WebkitDriver implements DriverInterface
      */
     public function blur($xpath)
     {
-        // TODO: Implement blur() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->browser->trigger($xpath, "blur");
     }
 
     /**
@@ -451,9 +452,14 @@ class WebkitDriver implements DriverInterface
      */
     public function keyPress($xpath, $char, $modifier = null)
     {
-        //$node = $this->browser->findOne($xpath);
-        //$this->browser->invoke("keypress", $node, $char, $modifier);
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $node  = $this->browser->findOne($xpath);
+        $alt   = ($modifier == "alt") ? "true" : "false";
+        $ctrl  = ($modifier == "ctrl") ? "true" : "false";
+        $meta  = ($modifier == "meta") ? "true" : "false";
+        $shift = ($modifier == "shift") ? "true" : "false";
+        $charCode = ord($char);
+
+        $this->getBrowser()->invoke("keypress", $node, $alt, $ctrl, $shift, $meta, 0, $charCode);
     }
 
     /**
