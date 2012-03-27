@@ -471,8 +471,7 @@ class WebkitDriver implements DriverInterface
      */
     public function keyDown($xpath, $char, $modifier = null)
     {
-        // TODO: Implement keyDown() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->keyImpl('keydown',$xpath, $char, $modifier);
     }
 
     /**
@@ -484,8 +483,51 @@ class WebkitDriver implements DriverInterface
      */
     public function keyUp($xpath, $char, $modifier = null)
     {
-        // TODO: Implement keyUp() method.
-        throw new UnsupportedDriverActionException(__FUNCTION__ . " does not support yet", $this);
+        $this->keyImpl('keyup',$xpath, $char, $modifier);
+    }
+
+    /**
+     * @param string $type keydown or keyup
+     * @param string $xpath
+     * @param string $char keyboard modifier (could be 'ctrl', 'alt', 'shift' or 'meta')
+     * @param string $modifier
+     */
+    protected function keyImpl($type, $xpath, $char, $modifier = null)
+    {
+        $altKey   = ($modifier == 'alt')   ? 'true' : 'false';
+        $ctrlKey  = ($modifier == 'ctrl')  ? 'true' : 'false';
+        $shiftKey = ($modifier == 'shift') ? 'true' : 'false';
+        $metaKey  = ($modifier == 'meta')  ? 'true' : 'false';
+        $charCode = ord($char);
+
+        $script = <<<JS
+(function(){
+    var itr = document.evaluate("$xpath", document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+    var node;
+    var results = [];
+
+    while (node = itr.iterateNext()) {
+        results.push(node);
+    }
+
+    if (results.length > 0) {
+        var target = results[0];
+        var eventObject = document.createEvent("Events");
+        eventObject.initEvent('$type', true, true);
+
+        eventObject.window   = window;
+        eventObject.altKey   = $altKey;
+        eventObject.ctrlKey  = $ctrlKey;
+        eventObject.shiftKey = $shiftKey;
+        eventObject.metaKey  = $metaKey;
+        eventObject.keyCode  = 0;
+        eventObject.charCode = $charCode;
+        target.dispatchEvent(eventObject);
+    }
+
+})();
+JS;
+        $this->executeScript($script);
     }
 
     /**
